@@ -20,7 +20,7 @@
 
 #include <ros.h>
 
-//////#include <moveo_moveit/ArmJointState.h>
+
 #include <head_meka_control/HeadJoint.h>
 #include <std_msgs/Int16.h>
 // MultiStepper.pde
@@ -30,19 +30,18 @@
 #include <AccelStepper.h>
 #include <MultiStepper.h>
 // EG X-Y position bed driven by 2 steppers
-// Alas its not possible to build an array of these with different pins for each :-(
 
 // Joint 1
 #define E1_STEP_PIN        12
 #define E1_DIR_PIN         13
-//#define E1_ENABLE_PIN      30
+
 
 // Joint 2
 #define Z_STEP_PIN         11
 #define Z_DIR_PIN          10
-//#define Z_ENABLE_PIN       62
-//#define Z_MIN_PIN          18
-//#define Z_MAX_PIN          19
+//#define Z_ENABLE_PIN      
+//#define Z_MIN_PIN          
+//#define Z_MAX_PIN         
 
 
 AccelStepper joint1(1,E1_STEP_PIN, E1_DIR_PIN);
@@ -57,10 +56,10 @@ long positions[2]; // Array of desired stepper positions
 
 
 
-void arm_cb(const head_meka_control::HeadJoint& arm_steps){
+void head_cb(const head_meka_control::HeadJoint& head_steps){
   joint_status = 1;
-  joint_step[0] = arm_steps.position1;
-  joint_step[1] = arm_steps.position2;
+  joint_step[0] = head_steps.position1;
+  joint_step[1] = head_steps.position2;
 }
 
 
@@ -69,8 +68,7 @@ void arm_cb(const head_meka_control::HeadJoint& arm_steps){
 ros::NodeHandle nh;
 std_msgs::Int16 msg;
 //instantiate subscribers
-//ros::Subscriber<moveo_moveit::ArmJointState> arm_sub("joint_steps",arm_cb); //subscribes to joint_steps on arm
-ros::Subscriber<head_meka_control::HeadJoint> arm_sub("joint_steps",arm_cb); //subscribes to joint_steps on arm
+ros::Subscriber<head_meka_control::HeadJoint> head_sub("joint_steps",head_cb); //subscribes to joint_steps on head
 
 
 
@@ -81,7 +79,7 @@ void setup() {
   joint_status = 1;
 
   nh.initNode();
-  nh.subscribe(arm_sub);
+  nh.subscribe(head_sub);
   // Configure each stepper
   joint1.setMaxSpeed(1000);
   joint1.setAcceleration(300);
@@ -91,7 +89,7 @@ void setup() {
   steppers.addStepper(joint1);
   steppers.addStepper(joint2);
 
-  digitalWrite(13, 1); //toggle led
+  //digitalWrite(13, 1); //toggle led DEACTIVATED TO AVOID ERRORS
 }
 void loop() {
    if (joint_status == 1) // If command callback (arm_cb) is being called, execute stepper command
