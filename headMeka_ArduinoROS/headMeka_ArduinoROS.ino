@@ -30,15 +30,15 @@
 #include <AccelStepper.h>
 #include <MultiStepper.h>
 // EG X-Y position bed driven by 2 steppers
-
+#define ENABLE_ALL 8
 // Joint 1
-#define E1_STEP_PIN        12
-#define E1_DIR_PIN         13
+#define E1_STEP_PIN        2
+#define E1_DIR_PIN         5
 
 
 // Joint 2
-#define Z_STEP_PIN         11
-#define Z_DIR_PIN          10
+#define Z_STEP_PIN         4
+#define Z_DIR_PIN          7
 //#define Z_ENABLE_PIN      
 //#define Z_MIN_PIN          
 //#define Z_MAX_PIN         
@@ -76,6 +76,9 @@ ros::Subscriber<head_meka_control::HeadJoint> head_sub("joint_steps",head_cb); /
 
 void setup() {
     pinMode(13,OUTPUT);
+    pinMode(ENABLE_ALL, OUTPUT);
+
+    digitalWrite(ENABLE_ALL, LOW);
   joint_status = 1;
 
   nh.initNode();
@@ -83,12 +86,12 @@ void setup() {
   // Configure each stepper
   joint1.setMaxSpeed(1000);
   joint1.setAcceleration(300);
-  joint2.setMaxSpeed(100);
+  joint2.setMaxSpeed(1000);
   joint2.setAcceleration(300);
   // Then give them to MultiStepper to manage
   steppers.addStepper(joint1);
   steppers.addStepper(joint2);
-
+  delay(2000);
   //digitalWrite(13, 1); //toggle led DEACTIVATED TO AVOID ERRORS
 }
 void loop() {

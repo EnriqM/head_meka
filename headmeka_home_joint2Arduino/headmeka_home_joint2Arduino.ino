@@ -141,11 +141,8 @@ void setup() {
 
   initialjoint1();
   initialjoint2();
-  //joint2.setCurrentPosition(0);
-
-//delay(5000); just to test robustness
-
-
+  
+  //delay(5000); just to test robustness
   
   nh.initNode();
   nh.subscribe(head_sub);
