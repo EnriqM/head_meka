@@ -1,15 +1,13 @@
-/* Purpose: This sketch uses ROS as well as MultiStepper, AccelStepper, and Servo libraries to control the 
- * BCN3D Moveo robotic arm. In this setup, a Ramps 1.4 shield is used on top of an Arduino Mega 2560.  
- * Subscribing to the following ROS topics: 1) joint_steps, 2) gripper_angle
- *    1) joint_steps is computed from the simulation in PC and sent Arduino via rosserial.  It contains
- *       the steps (relative to the starting position) necessary for each motor to move to reach the goal position.
- *    2) gripper_angle contains the necessary gripper angle to grasp the object when the goal state is reached 
+/* Purpose: This sketch headMeka_ArduinoROS uses ROS as well as MultiStepper, AccelStepper libraries to control the 
+ * head of the Meka. It doesn't include the sensors to check 
+ * where is the HOME, but it will be easy to integrate
  * 
- * Publishing to the following ROS topics: joint_steps_feedback
- *    1) joint_steps_feedback is a topic used for debugging to make sure the Arduino is receiving the joint_steps data
- *       accurately
+ * It gets stucked on the loop, so it would be nice to send little steps
+ * through a script in ROS
  *       
- * Author: Jesse Weisberg
+ * Author: Enrique Ortega
+ * 
+ * based on Jesse Weisberg's moveo_ros
  * 
  * #if (ARDUINO >= 100)
   #include <Arduino.h>
@@ -66,7 +64,10 @@ void head_cb(const head_meka_control::HeadJoint& head_steps){
 
 
 ros::NodeHandle nh;
-std_msgs::Int16 msg;
+//std_msgs::Int16 msg;
+head_meka_control::HeadJoint msg;
+
+ros::Publisher steps("joint_steps_feedback",&msg);
 //instantiate subscribers
 ros::Subscriber<head_meka_control::HeadJoint> head_sub("joint_steps",head_cb); //subscribes to joint_steps on head
 
@@ -83,6 +84,7 @@ void setup() {
 
   nh.initNode();
   nh.subscribe(head_sub);
+   nh.advertise(steps);
   // Configure each stepper
   joint1.setMaxSpeed(1000);
   joint1.setAcceleration(300);
@@ -102,8 +104,10 @@ void loop() {
     positions[1] = joint_step[1]; 
 
     // Publish back to ros to check if everything's correct
-    //msg.data=positions[4];
-    //steps.publish(&msg);
+    msg.position1 = positions[0];
+    msg.position2 = positions[1];
+    //msg.data=positions[0];
+    steps.publish(&msg);
 
     steppers.moveTo(positions);
     nh.spinOnce();
