@@ -1,0 +1,55 @@
+<launch>
+
+
+  <arg name="gui" default="true" />
+  <arg name="rvizconfig" default="$(find head_meka_description)/rviz/meka_and_head.rviz" />
+
+  <param name="use_gui" value="$(arg gui)"/>
+
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+
+
+
+<!-- spawn general model for head_meka -->
+  <arg name="head_model" default="$(find head_meka_description)/urdf/head_basic.urdf" />
+  <param name="head_description" command="$(find xacro)/xacro.py '$(arg head_model)'" />
+
+
+
+<node pkg="robot_state_publisher" type="state_publisher" name="head_state_publisher"  >
+	    <remap from="robot_description" to="head_description" />
+	    <remap from="joint_states" to="joint_states_head" /> 
+</node>
+<node name="head_joint_publisher" pkg="joint_state_publisher" type="joint_state_publisher" >
+     <remap from="robot_description" to="head_description" />
+     <remap from="joint_states" to="joint_states_head" />
+</node>
+
+<!-- spawn general model for meka&Kinect -->
+  <arg name="meka_model" default="$(find meka_description)/robots/uja_acople.urdf.xacro" />
+  <param name="meka_description" command="$(find xacro)/xacro.py '$(arg meka_model)'" />
+
+<node pkg="robot_state_publisher" type="state_publisher" name="meka_state_publisher"  >
+	    <remap from="robot_description" to="meka_description" />
+            <remap from="joint_states" to="humanoid_state" />
+</node>
+
+<node name="meka_joint_publisher" pkg="joint_state_publisher" type="joint_state_publisher" >
+     <remap from="robot_description" to="meka_description" />
+     <remap from="joint_states" to="humanoid_state" />
+</node>
+
+
+<!-- Union entre el PMB2 y el Meka-->
+    <node pkg="tf" type="static_transform_publisher" name="meka_PMB2_joint_broadcaster" args="0 0 0.2 0 0 0 base_link base_meka_link 20" />
+
+
+<!-- Union entre el Meka y su cabeza-->
+    <node pkg="tf" type="static_transform_publisher" name="meka_head_joint_broadcaster" args="0 0 0.0436 1.57 0 0 robot_link head_base_link 20" />
+
+
+<!-- También el Meka, aunque sea 
+<include file="$(find platform_bringup)/launch/various_bringup.launch" />-->
+
+</launch>
