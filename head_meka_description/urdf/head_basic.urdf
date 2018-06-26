@@ -50,13 +50,14 @@
      <origin xyz="0 0 0.184"/>
    </joint>
 
+<!-- 0.7068 a -0.47123 radianes. Estaba en -0.9 a 0.9 .  Velocity de 1 ha pasado a 0.5-->
   <joint name="medium_to_upp" type="revolute">
     <axis xyz="1 0 0" />
     <limit
-      lower="-0.9"
-      upper="0.9"
+      lower="-0.32"
+      upper="0.62"
       effort="5"
-      velocity="1" />
+      velocity="0.1" />
    <parent link="medium_link"/>
      <child link="upper_link"/>
      <origin xyz="0 0 0"/>

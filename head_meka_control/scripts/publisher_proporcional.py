@@ -24,10 +24,10 @@ from head_meka_control.msg import HeadJoint
 def talkersteps():
     pub = rospy.Publisher('joint_steps', HeadJoint, queue_size=10)
     rospy.init_node('publishSteps')#, anonymous=True)
-    rate = rospy.Rate(20) # Hz
+    rate = rospy.Rate(10) # Hz
     pasos = HeadJoint()
     posicion = 0
-    pasito = 20
+    pasito = 100
     while not rospy.is_shutdown():
         if posicion > 3600 or posicion < 0:
             pasito = -pasito

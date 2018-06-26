@@ -7,7 +7,7 @@
   <param name="use_gui" value="$(arg gui)"/>
 
 
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" />
 
 
 
@@ -45,8 +45,8 @@
     <node pkg="tf" type="static_transform_publisher" name="meka_PMB2_joint_broadcaster" args="0 0 0.2 0 0 0 base_link base_meka_link 20" />
 
 
-<!-- Union entre el Meka y su cabeza-->
-    <node pkg="tf" type="static_transform_publisher" name="meka_head_joint_broadcaster" args="0 0 0.0436 1.57 0 0 robot_link head_base_link 20" />
+<!-- Union entre el Meka y su cabeza. Antes z=0.0436 ahora suma 2.40mm-->
+    <node pkg="tf" type="static_transform_publisher" name="meka_head_joint_broadcaster" args="0 0 0.046 1.57 0 0 robot_link head_base_link 20" />
 
 
 <!-- También el Meka, aunque sea 
