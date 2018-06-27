@@ -29,6 +29,7 @@ Make sure you give permissions to the python files !!
 	- If ros_lib already exists in your Arduino libraries (<Arduino sketchbook>/libraries), follow the last troubleshooting tip or you'll get an error.  ROS makes you remove ros_lib and regenerate it every time you introduce a new custom message.
  
 3. Run the next code. At this point, your Arduino needs to be connected, you'll have write the next commands. Serial port may change, you can check it easily using Arduino IDE
+EDIT: script from Arduino that is currently used is ![THIS ONE](/headMeka_ArduinoROS/headMeka_ArduinoROS.ino)
 ```
 rosrun rosserial_python serial_node.py /dev/ttyACM0 
 roslaunch head_meka_description head_urdf.launch
